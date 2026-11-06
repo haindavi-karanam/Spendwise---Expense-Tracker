@@ -1,5 +1,6 @@
 import { createExpense, 
-        getExpenses, 
+        getExpenses,
+        getExpenseSummary, 
         getExpenseById,
         updateExpense,
         deleteExpense
@@ -12,6 +13,7 @@ const expenseRoutes = express.Router();
 
 expenseRoutes.post("/", userMiddleware, createExpense);
 expenseRoutes.get("/", userMiddleware, getExpenses);
+expenseRoutes.get("/summary", userMiddleware, getExpenseSummary);
 expenseRoutes.get("/:id", userMiddleware, getExpenseById);
 
 expenseRoutes.put("/:id", userMiddleware, updateExpense);

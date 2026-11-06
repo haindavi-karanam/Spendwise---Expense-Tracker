@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Expense from "../models/Expense.js";
+import expenseRoutes from "../routes/expense.route.js";
 
 export const createExpense = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ export const createExpense = async (req, res) => {
 
         // Validate required fields
         if(!title||!amount||!type||!category||!date){
-            res.status(400).josn({
+            res.status(400).json({
                 message:"Please enter all the required fields"
             });
         }
@@ -48,16 +49,37 @@ export const createExpense = async (req, res) => {
 };
 export const getExpenses = async (req, res) => {
     try {
-        // 1. Fetch expenses belonging to logged-in user
-        const expense = await Expense.find({
-    user: req.user}).sort({date:-1});
-        // 2. Sort by date (newest first)
+        const { type, category, startDate, endDate } = req.query; 
+        const filter = {
+            user: req.user
+        };
+        //type and category
+        if (type) {
+            filter.type = type;
+        }
+
+        if (category) {
+            filter.category = category;
+        }
+        //dates
+        if (startDate || endDate) {
+            filter.date = {};
+
+        if (startDate) {
+            filter.date.$gte = new Date(startDate);
+        }
+
+        if (endDate) {
+            filter.date.$lte = new Date(endDate);
+        }
+        }
+
+        const expense = await Expense.find(filter).sort({date:-1}); 
 
 
-        // 3. Send response
             res.status(200).json({
             success: true,
-            message:"Track of your expenses",
+            message:"Expenses retrived successfully",
             count: expense.length,
             expense
         });
@@ -198,3 +220,76 @@ export const deleteExpense = async (req, res) => {
         });
     }
 };
+export const getExpenseSummary = async (req, res)=>{
+    try{
+        const summary = await Expense.aggregate([
+             {
+                $match: {
+                    user: new mongoose.Types.ObjectId(req.user)
+                }
+            },
+            {
+                $group: {
+                    _id: "$type",
+                    total: { $sum: "$amount" }
+                }
+            }
+        ]);
+        let totalIncome = 0;
+        let totalExpense = 0;
+
+        summary.forEach((item) => {
+            if (item._id === "income") {
+                totalIncome = item.total;
+            }
+
+            if (item._id === "expense") {
+                totalExpense = item.total;
+            }
+        });
+
+        const categoryBreakdown = await Expense.aggregate([
+            {
+                $match: {
+                    user: new mongoose.Types.ObjectId(req.user),
+                    type: "expense"
+                }
+            },
+            {
+                $group: {
+                    _id: "$category",
+                    total: { $sum: "$amount" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    category: "$_id",
+                    total: 1
+                }
+            },
+            {
+                $sort: { total: -1 }
+            }
+        ]);
+
+        return res.status(200).json({
+            success: true,
+            summary: {
+                totalIncome,
+                totalExpense,
+                balance: totalIncome - totalExpense
+            },
+            categoryBreakdown
+        });
+
+    } catch (error) {
+        console.error("Summary error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
+};
+    
