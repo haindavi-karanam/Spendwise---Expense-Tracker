@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+/frontend/.env
+/backend/.env
+
+# Build files
+dist/
+build/
+
+# Uploaded receipt images
+backend/uploads/
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+
+# Test coverage
+coverage/

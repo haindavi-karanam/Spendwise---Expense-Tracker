@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
 
                 setUser(response.data.user);
             } catch (error) {
+                console.error("Failed to restore user:", error);
                 localStorage.removeItem("token");
                 setUser(null);
             } finally {

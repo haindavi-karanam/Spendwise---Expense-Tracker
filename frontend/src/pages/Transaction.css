@@ -1,0 +1,201 @@
+
+/* =====================================
+   TRANSACTIONS PAGE
+===================================== */
+
+.transactions-section {
+    width: 100%;
+    min-width: 0;
+}
+
+.transaction-table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: #34384a #11131b;
+}
+
+.transaction-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.transaction-table th {
+    color: #9298a8;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: left;
+    padding: 15px 12px;
+    border-bottom: 1px solid #34384a;
+    white-space: nowrap;
+}
+
+.transaction-table td {
+    color: #e6e9ef;
+    font-size: 13px;
+    padding: 17px 12px;
+    border-bottom: 1px solid #2c3142;
+    white-space: nowrap;
+}
+
+.transaction-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.transaction-table tbody tr:hover {
+    background: #222635;
+}
+
+.transaction-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* =====================================
+   INCOME / EXPENSE LABELS
+===================================== */
+
+.type-income,
+.type-expense {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-transform: capitalize;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.type-income {
+    color: #22c55e;
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.type-expense {
+    color: #ef6464;
+    background: rgba(239, 68, 68, 0.12);
+}
+
+/* =====================================
+   ACTION BUTTONS
+===================================== */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.edit-btn,
+.delete-btn {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.edit-btn {
+    background: rgba(255, 158, 39, 0.13);
+    color: #ff9e27;
+}
+
+.delete-btn {
+    background: rgba(239, 68, 68, 0.12);
+    color: #ef6464;
+}
+
+.edit-btn:hover {
+    background: #ff9e27;
+    color: #171923;
+}
+
+.delete-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+}
+
+/* =====================================
+   BACK TO DASHBOARD
+===================================== */
+
+.back-btn {
+    display: inline-block;
+    background: #ff9e27;
+    color: #171923;
+    text-decoration: none;
+    padding: 11px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #ffb04a;
+}
+
+/* =====================================
+   LOADING / EMPTY / ERROR
+===================================== */
+
+.transaction-message {
+    color: #9ca3af;
+    text-align: center;
+    padding: 45px 10px;
+    font-size: 14px;
+}
+
+.transaction-error {
+    color: #ef6464;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 1100px) {
+    .transaction-table th,
+    .transaction-table td {
+        padding: 14px 10px;
+    }
+}
+
+@media (max-width: 760px) {
+    .dashboard-header {
+        align-items: flex-start;
+    }
+
+    .back-btn {
+        align-self: flex-start;
+    }
+
+    .transaction-table {
+        min-width: 650px;
+    }
+}
+
+@media (max-width: 420px) {
+    .transactions-section {
+        padding: 14px;
+    }
+
+    .section-header h2 {
+        font-size: 16px;
+    }
+
+    .section-header span {
+        font-size: 11px;
+    }
+}
