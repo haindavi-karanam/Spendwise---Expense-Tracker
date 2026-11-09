@@ -35,8 +35,10 @@
 
 .logo::first-letter {
     color: #ff9e27;
+    font-family: "Brush Script MT", cursive;
+    font-size: 1.5em;
+    font-style: italic;
 }
-
 .nav-links {
     display: flex;
     flex-direction: column;
