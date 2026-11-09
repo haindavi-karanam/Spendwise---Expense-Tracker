@@ -2,7 +2,6 @@
 import Tesseract from "tesseract.js";
 
 const extractReceiptData = (text) => {
-
     const lines = text
         .split("\n")
         .map((line) => line.trim())
@@ -11,50 +10,52 @@ const extractReceiptData = (text) => {
     // Normalize spaces and line breaks
     const normalizedText = text.replace(/\s+/g, " ");
 
-    // Extract store name (avoid labels like Name, Date, Cashier)
-    const storeName = lines.find((line) =>
-        !/^(name|date|cashier|bill\s*no\.?|item|qty|price|amount)\s*:?/i.test(line)
-    ) || null;
+    // Extract store name
+    const storeName =
+        lines.find(
+            (line) =>
+                !/^(name|date|cashier|bill\s*no\.?|item|qty|price|amount)\s*:?/i.test(
+                    line
+                )
+        ) || null;
+
+    // Extract amount from a line containing Grand Total or Total
+    const extractAmountFromLine = (line) => {
+        // Match amounts such as 109, 109.00, 1,250.50
+        const matches = [
+            ...line.matchAll(/(\d[\d,]*(?:\.\d{1,2})?)/g)
+        ];
+
+        if (matches.length === 0) return null;
+
+        // Use the last number on the total line
+        let amountText = matches[matches.length - 1][1];
+
+        return Number(amountText.replace(/,/g, ""));
+    };
 
     let amount = null;
 
-    // Priority 1: Find Grand Total
-    const grandTotalMatch = normalizedText.match(
-        /\bgrand\s*total\b\s*[:\-₹$€£¥]*\s*([\d,]+(?:\.\d{1,2})?)/i
+    // Priority 1: Grand Total
+    const grandTotalLine = lines.find((line) =>
+        /grand\s*total/i.test(line)
     );
 
-    if (grandTotalMatch) {
+    if (grandTotalLine) {
+        amount = extractAmountFromLine(grandTotalLine);
+    }
 
-        amount = Number(grandTotalMatch[1].replace(/,/g, ""));
+    // Priority 2: Regular Total (excluding Sub Total)
+    if (amount === null) {
+        const totalLines = lines.filter(
+            (line) =>
+                /\btotal\b/i.test(line) &&
+                !/\b(sub\s*total|grand\s*total)\b/i.test(line)
+        );
 
-    } else {
-
-        // Priority 2: Find standalone Total
-        // Exclude Sub Total
-
-        const totalMatches = [
-            ...normalizedText.matchAll(
-                /\btotal\b\s*[:\-₹$€£¥]*\s*([\d,]+(?:\.\d{1,2})?)/gi
-            )
-        ];
-
-        const validTotals = totalMatches.filter((match) => {
-
-            const precedingText = normalizedText.slice(
-                Math.max(0, match.index - 10),
-                match.index
-            );
-
-            return !/sub\s*$/i.test(precedingText);
-        });
-
-        if (validTotals.length > 0) {
-
-            const selectedTotal =
-                validTotals[validTotals.length - 1];
-
-            amount = Number(
-                selectedTotal[1].replace(/,/g, "")
+        if (totalLines.length > 0) {
+            amount = extractAmountFromLine(
+                totalLines[totalLines.length - 1]
             );
         }
     }
@@ -73,7 +74,6 @@ const extractReceiptData = (text) => {
     };
 };
 
-
 export const scanReceipt = async (req, res) => {
 
     try {
@@ -89,7 +89,11 @@ export const scanReceipt = async (req, res) => {
         // Read text from the uploaded image
         const result = await Tesseract.recognize(
             req.file.path,
-            "eng"
+            "eng",
+            {
+                logger: (m) => console.log(m),
+            }
+
         );
 
         // Extract receipt information
