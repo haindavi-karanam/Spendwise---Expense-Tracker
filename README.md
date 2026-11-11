@@ -52,7 +52,7 @@ SpendWise is a full-stack expense tracking application that helps users manage t
 
 ## 📂 Project Structure
 
-
+```
 Spendwise/
 │
 ├── frontend/
