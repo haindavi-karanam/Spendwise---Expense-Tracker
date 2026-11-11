@@ -4,9 +4,9 @@ SpendWise is a full-stack expense tracking application that helps users manage t
 
 ## 🚀 Live Demo
 
-🌐 **Frontend:** [Add your Vercel URL here]
+🌐 **Frontend:** https://spendwise-expense-tracker-rouge-kappa.vercel.app
 
-⚙️ **Backend API:** [Add your Render URL here]
+⚙️ **Backend API:** https://spendwise-api-k2j9.onrender.com
 
 ---
 
@@ -52,7 +52,7 @@ SpendWise is a full-stack expense tracking application that helps users manage t
 
 ## 📂 Project Structure
 
-```text
+
 Spendwise/
 │
 ├── frontend/
